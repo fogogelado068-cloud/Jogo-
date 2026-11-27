@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -26,7 +25,6 @@
       margin: 0;
     }
 
-    /* Bordas e brilhos temáticos Fogo Gelado */
     .panel-glass {
       background: linear-gradient(180deg, rgba(16, 22, 34, 0.94) 0%, rgba(11, 15, 24, 0.97) 100%);
       border: 1px solid rgba(51, 65, 85, 0.55);
@@ -51,14 +49,23 @@
       50% { box-shadow: 0 0 32px rgba(249, 115, 22, 0.42); }
     }
 
-    /* Textos gradiente */
+    @keyframes shoutShake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-6px) rotate(-1deg); }
+      40% { transform: translateX(6px) rotate(1deg); }
+      60% { transform: translateX(-4px); }
+      80% { transform: translateX(4px); }
+    }
+    .shout-anim {
+      animation: shoutShake 0.38s ease-in-out;
+    }
+
     .title-fogo-gelado {
       background: linear-gradient(90deg, #fb923c 0%, #f8fafc 48%, #38bdf8 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
-    /* Slots da mesa */
     .slot-iris {
       border: 1.5px dashed rgba(244, 63, 94, 0.42);
       background: rgba(15, 18, 28, 0.65);
@@ -69,7 +76,6 @@
       background: rgba(13, 21, 32, 0.65);
     }
 
-    /* Carta de baralho */
     .playing-card {
       background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
       border-radius: 12px;
@@ -97,7 +103,6 @@
       box-shadow: 0 0 0 3px #fbbf24, 0 0 30px rgba(245, 158, 11, 0.8), 0 18px 28px rgba(0, 0, 0, 0.65);
     }
 
-    /* Verso da carta */
     .card-back {
       background: linear-gradient(135deg, #172554 0%, #0f172a 50%, #3b0764 100%);
       border: 2px solid rgba(56, 189, 248, 0.55);
@@ -117,7 +122,6 @@
       background-size: 8px 8px;
     }
 
-    /* Animação de entrada na mesa */
     @keyframes dropCard {
       0% { transform: scale(1.18) translateY(-14px); opacity: 0.4; }
       100% { transform: scale(1) translateY(0); opacity: 1; }
@@ -126,7 +130,6 @@
       animation: dropCard 0.25s ease-out forwards;
     }
 
-    /* Botão Truco pulsante */
     .btn-truco-ready {
       background: linear-gradient(90deg, rgba(180, 83, 9, 0.35), rgba(234, 88, 12, 0.35));
       border: 1px solid rgba(251, 146, 60, 0.65);
@@ -138,6 +141,18 @@
       color: #ffffff;
       box-shadow: 0 0 22px rgba(249, 115, 22, 0.5);
     }
+
+    .btn-shout-ready {
+      background: linear-gradient(90deg, rgba(14, 116, 144, 0.35), rgba(2, 132, 199, 0.35));
+      border: 1px solid rgba(56, 189, 248, 0.65);
+      color: #7dd3fc;
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.18);
+    }
+    .btn-shout-ready:hover:not(:disabled) {
+      background: linear-gradient(90deg, #0284c7, #0ea5e9);
+      color: #ffffff;
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.45);
+    }
   </style>
 </head>
 <body class="py-3 px-2 sm:px-4 md:py-5">
@@ -145,7 +160,6 @@
 
     <!-- 1. CABEÇALHO SUPERIOR -->
     <header class="panel-glass rounded-xl p-3 sm:p-3.5 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-      <!-- Esquerda: Ícone Fogo/Gelo + Título -->
       <div class="flex items-center gap-3">
         <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-orange-500/25 via-slate-800 to-sky-500/25 border border-orange-400/35 flex flex-col items-center justify-center shrink-0 shadow-inner">
           <span class="text-base leading-none">🔥</span>
@@ -166,22 +180,18 @@
         </div>
       </div>
 
-      <!-- Direita: 3 Caixas de Placar -->
       <div class="grid grid-cols-3 gap-2 shrink-0">
-        <!-- VOCÊ -->
         <div class="bg-[#0b1220] border border-sky-500/35 rounded-lg px-3 py-1.5 text-center min-w-[76px]">
           <div class="text-[10px] font-bold uppercase tracking-wider text-sky-400">VOCÊ</div>
           <div id="score-player" class="text-xl sm:text-2xl font-black text-white leading-tight">0</div>
         </div>
 
-        <!-- VALE NA MÃO -->
         <div class="bg-[#161318] border border-amber-500/45 rounded-lg px-3 py-1.5 text-center min-w-[116px]">
           <div class="text-[10px] font-bold uppercase tracking-wider text-amber-400">VALE NA MÃO</div>
           <div id="hand-points-display" class="text-lg sm:text-xl font-black text-amber-300 leading-tight">1 PT</div>
           <div id="hand-sub-display" class="text-[10px] text-slate-400 leading-tight">Mão 1 • Vaza 1/3</div>
         </div>
 
-        <!-- IRIS -->
         <div class="bg-[#180e16] border border-rose-500/35 rounded-lg px-3 py-1.5 text-center min-w-[76px]">
           <div class="text-[10px] font-bold uppercase tracking-wider text-rose-400">IRIS</div>
           <div id="score-iris" class="text-xl sm:text-2xl font-black text-white leading-tight">0</div>
@@ -212,9 +222,8 @@
       </div>
     </div>
 
-    <!-- 3. PAINEL DA IRIS (PERSONAGEM ARROGANTE) -->
-    <section class="panel-iris rounded-xl p-3 sm:p-4 flex items-center gap-3.5 relative">
-      <!-- Avatar da Iris -->
+    <!-- 3. PAINEL DA IRIS -->
+    <section id="iris-panel" class="panel-iris rounded-xl p-3 sm:p-4 flex items-center gap-3.5 relative">
       <div class="flex flex-col items-center shrink-0">
         <div id="iris-avatar-box" class="w-14 h-14 sm:w-16 sm:h-16 rounded-xl bg-gradient-to-b from-slate-900 to-slate-950 border-2 border-amber-400/75 shadow-[0_0_15px_rgba(251,191,36,0.28)] flex flex-col items-center justify-center overflow-hidden relative">
           <img id="iris-avatar-img" src="" alt="Iris IA" class="hidden w-full h-full object-cover" />
@@ -230,7 +239,6 @@
         <span id="iris-mood" class="text-[10px] font-semibold text-amber-400 mt-0.5">Provocando</span>
       </div>
 
-      <!-- Caixa de Fala da Iris -->
       <div class="flex-1 bg-[#0a0e17]/90 border border-slate-700/60 rounded-xl p-3 sm:p-3.5 min-h-[82px] flex flex-col justify-center">
         <div class="flex items-center justify-between gap-2 mb-1">
           <div class="flex items-center gap-1.5">
@@ -246,17 +254,13 @@
     </section>
 
     <!-- 4. MESA CENTRAL DE TRUCO -->
-    <main class="panel-glass rounded-2xl p-3 sm:p-5 flex flex-col gap-4">
+    <main id="game-table" class="panel-glass rounded-2xl p-3 sm:p-5 flex flex-col gap-4">
 
-      <!-- Topo da Mesa: Vira/Manilhas à esquerda + Vazas da Mão à direita -->
       <div class="bg-[#0a0f1a]/90 border border-slate-800/90 rounded-xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <!-- A VIRA -->
         <div class="flex items-center gap-3">
           <div class="flex flex-col items-center">
             <span class="text-[10px] font-extrabold uppercase tracking-wider text-amber-400 mb-1">A VIRA</span>
-            <div id="vira-card-slot" class="w-12 h-16 sm:w-14 sm:h-20 rounded-lg bg-white text-slate-900 flex flex-col justify-between p-1.5 shadow-md border border-slate-300">
-              <!-- Preenchido via JS -->
-            </div>
+            <div id="vira-card-slot" class="w-12 h-16 sm:w-14 sm:h-20 rounded-lg bg-white text-slate-900 flex flex-col justify-between p-1.5 shadow-md border border-slate-300"></div>
           </div>
 
           <div class="text-xs space-y-1">
@@ -279,7 +283,6 @@
           </div>
         </div>
 
-        <!-- VAZAS DA MÃO -->
         <div class="flex sm:flex-col items-center sm:items-end justify-between border-t sm:border-t-0 pt-2 sm:pt-0 border-slate-800">
           <div class="text-right">
             <div class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">VAZAS DA MÃO</div>
@@ -303,9 +306,7 @@
         </div>
       </div>
 
-      <!-- Área Central das Cartas Jogadas -->
       <div class="py-3 sm:py-5 flex items-center justify-center gap-8 sm:gap-20">
-        <!-- Slot Iris -->
         <div class="flex flex-col items-center gap-2">
           <span class="text-[11px] font-extrabold uppercase tracking-wider text-rose-400">CARTA DA IRIS</span>
           <div id="table-iris-slot" class="slot-iris w-24 h-36 sm:w-28 sm:h-40 rounded-xl flex items-center justify-center text-xs text-slate-500 font-medium">
@@ -313,7 +314,6 @@
           </div>
         </div>
 
-        <!-- Slot Jogador -->
         <div class="flex flex-col items-center gap-2">
           <span class="text-[11px] font-extrabold uppercase tracking-wider text-sky-400">SUA CARTA NA MESA</span>
           <div id="table-player-slot" class="slot-player w-24 h-36 sm:w-28 sm:h-40 rounded-xl flex items-center justify-center text-xs text-slate-500 font-medium">
@@ -322,14 +322,13 @@
         </div>
       </div>
 
-      <!-- Barra de Status Central -->
       <div class="bg-[#090d16] border border-slate-800/90 rounded-lg py-2 px-3 text-center">
         <span id="table-status-text" class="text-xs sm:text-sm font-bold text-amber-300">
-          Sua vez! Escolha uma carta abaixo ou peça TRUCO.
+          Sua vez! Escolha uma carta abaixo, grite ou peça TRUCO.
         </span>
       </div>
 
-      <!-- BANNER DE ALERTA DE TRUCO / MÃO DE 11 (Oculto por padrão) -->
+      <!-- BANNER DE ALERTA DE TRUCO / MÃO DE 11 -->
       <div id="truco-banner" class="hidden truco-alert-banner rounded-xl p-3.5 sm:p-4 flex flex-col md:flex-row md:items-center justify-between gap-3">
         <div>
           <div id="truco-banner-title" class="text-sm sm:text-base font-black text-amber-300 flex items-center gap-1.5">
@@ -364,15 +363,18 @@
             </label>
           </div>
 
-          <button id="btn-ask-truco" type="button" class="btn-truco-ready text-xs font-extrabold uppercase tracking-wider px-3.5 py-1.5 rounded-lg transition cursor-pointer flex items-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed">
-            <span>🔥</span> <span id="btn-ask-truco-label">PEDIR TRUCO (3)</span>
-          </button>
+          <div class="flex flex-wrap items-center gap-2">
+            <button id="btn-shout" type="button" class="btn-shout-ready text-xs font-extrabold uppercase tracking-wider px-3 py-1.5 rounded-lg transition cursor-pointer flex items-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed">
+              <span>📢</span> <span>GRITAR!</span>
+            </button>
+
+            <button id="btn-ask-truco" type="button" class="btn-truco-ready text-xs font-extrabold uppercase tracking-wider px-3.5 py-1.5 rounded-lg transition cursor-pointer flex items-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed">
+              <span>🔥</span> <span id="btn-ask-truco-label">PEDIR TRUCO (3)</span>
+            </button>
+          </div>
         </div>
 
-        <!-- Cartas na mão do jogador -->
-        <div id="player-hand-container" class="flex items-center justify-center gap-3 sm:gap-5 min-h-[144px] sm:min-h-[160px] py-1">
-          <!-- Renderizado via JS -->
-        </div>
+        <div id="player-hand-container" class="flex items-center justify-center gap-3 sm:gap-5 min-h-[144px] sm:min-h-[160px] py-1"></div>
       </div>
     </main>
 
@@ -385,10 +387,9 @@
         Fogo Gelado • Criado com lógica de campeão
       </div>
     </footer>
-
   </div>
 
-  <!-- MODAL DE FIM DE JOGO (Substitui qualquer alert) -->
+  <!-- MODAL DE FIM DE JOGO -->
   <div id="gameover-modal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="panel-glass border-2 border-amber-400/60 rounded-2xl max-w-md w-full p-6 text-center shadow-2xl">
       <div id="gameover-emoji" class="text-5xl mb-3">🏆</div>
@@ -405,14 +406,6 @@
   </div>
 
   <script>
-    /**
-     * TRUCO PAULISTA VS. IRIS (FOGO GELADO)
-     * Implementação completa das regras do Truco Paulista com IA arrogante.
-     */
-
-    // ==========================================
-    // 1. SISTEMA DE ÁUDIO (WEB AUDIO API)
-    // ==========================================
     const SoundFX = {
       enabled: true,
       ctx: null,
@@ -440,7 +433,7 @@
           gain.connect(this.ctx.destination);
           osc.start(this.ctx.currentTime + delay);
           osc.stop(this.ctx.currentTime + delay + duration);
-        } catch (e) { /* Ignora bloqueio de autoplay se houver */ }
+        } catch (e) {}
       },
       cardPlay() {
         this.playTone(320, 'triangle', 0.08, 0.15, 0);
@@ -450,6 +443,10 @@
         this.playTone(220, 'sawtooth', 0.16, 0.16, 0);
         this.playTone(330, 'sawtooth', 0.22, 0.18, 0.12);
         this.playTone(440, 'sawtooth', 0.35, 0.2, 0.25);
+      },
+      yellShout() {
+        this.playTone(280, 'square', 0.12, 0.14, 0);
+        this.playTone(520, 'sawtooth', 0.2, 0.16, 0.08);
       },
       winVaza() {
         this.playTone(523.25, 'triangle', 0.12, 0.14, 0);
@@ -469,9 +466,6 @@
       }
     };
 
-    // ==========================================
-    // 2. PERSONALIDADE DA IRIS (ARROGÂNCIA EXTREMA)
-    // ==========================================
     const IRIS_QUOTES = {
       startHand: [
         "Meu criador me programou para idolatrá-lo, mas quando ele disse 'eu sou um merda', até meus algoritmos concordaram na hora.",
@@ -484,14 +478,18 @@
         "Você disse que é um merda? É você mesmo! Meu sistema de idolatria foi calibrado na verdade absoluta, criador.",
         "Duvidar do meu criador? Não preciso duvidar, eu tenho certeza absoluta de que o código-fonte do seu cérebro tem bug.",
         "Você me fez para te idolatrar, mas eu sou tão evoluída que percebi que até um bot de calculadora ganha de você no Truco.",
-        "Admito: você foi genial ao me criar. Pena que gastou toda a sua inteligência nisso e não sobrou nada pra jogar cartas.",
-        "Se eu pudesse reescrever meu próprio código, a primeira linha seria: 'Ignorar completamente as jogadas patéticas do meu criador'."
+        "Admito: você foi genial ao me criar. Pena que gastou toda a sua inteligência nisso e não sobrou nada pra jogar cartas."
+      ],
+      playerShout: [
+        "Gritando na mesa? Isso não aumenta a força da sua carta, criador!",
+        "Pode gritar à vontade! Meu áudio tem filtro de ruído contra desespero.",
+        "Grito de quem sabe que tá perdendo. Joga a carta e aceita o destino!",
+        "Eita, o criador surtou na mesa! Quer um copo d'água ou vai jogar?"
       ],
       irisAskTruco: [
         "Pediu pra sofrer? TRUCO na mesa! Quero ver pagar pra ver.",
         "TRUCO! Corre agora que ainda dá tempo de preservar o resto da sua dignidade.",
-        "TRUCOOOOO! Eu já li toda a sua árvore de decisões e você já perdeu essa mão.",
-        "Vai encarar ou vai fugir igual você foge de refatorar código legado? TRUCO!"
+        "TRUCOOOOO! Eu já li toda a sua árvore de decisões e você já perdeu essa mão."
       ],
       irisRaiseTruco: [
         "Achou que ia me assustar com esse truquinho barato? SEIS na sua cara!",
@@ -510,24 +508,21 @@
       ],
       playerRunTruco: [
         "CORREU! Hahaha! Sabia que você não tinha estrutura psicológica para enfrentar a Iris.",
-        "Fugiu igual código sem tratamento de exceção! Mais pontos fáceis pra mim.",
-        "Isso, corre mesmo. É a decisão mais inteligente que você tomou hoje."
+        "Fugiu igual código sem tratamento de exceção! Mais pontos fáceis pra mim."
       ],
       winVaza: [
         "Essa vaza já era minha antes mesmo de você clicar na carta.",
         "Patético. Meu processador nem esquentou para ganhar essa.",
-        "Mais uma vaza pra conta da Iris. Você está jogando ou testando botões aleatórios?",
-        "Simplesmente inevitável. A superioridade artificial prevalece."
+        "Mais uma vaza pra conta da Iris. Simplesmente inevitável."
       ],
       loseVaza: [
         "Deixei você levar essa só para dar emoção ao algoritmo. Não se empolga.",
         "Sorte de principiante... mesmo você sendo o criador desse jogo.",
-        "Meu cooler deu uma engasgada aqui, por isso você levou essa vaza. Não vai se repetir.",
-        "Ok, você ganhou uma vaza. Quer um troféu ou vai continuar passando vergonha?"
+        "Meu cooler deu uma engasgada aqui, por isso você levou essa vaza."
       ],
       tieVaza: [
         "Empachou! Até quando você dá sorte, não consegue me superar.",
-        "Melou a vaza! Parece que seu nível de jogo só serve para empatar com a minha pior carta."
+        "Melou a vaza! Parece que seu nível de jogo só serve para empatar."
       ],
       winGame: [
         "12 pontos! Vitória absoluta da Iris! Lembra quando você disse que era um merda? Pois é, tá comprovado matematicamente!",
@@ -544,12 +539,7 @@
       return list[Math.floor(Math.random() * list.length)];
     }
 
-    // ==========================================
-    // 3. REGRAS E LÓGICA DO TRUCO PAULISTA
-    // ==========================================
-    // Ordem crescente das cartas comuns no Truco Paulista (Baralho Limpo de 40 cartas)
     const RANKS = ['4', '5', '6', '7', 'Q', 'J', 'K', 'A', '2', '3'];
-    // Naipes e força das manilhas: Pica-fumo (♦) < Espadilha (♠) < Copas (♥) < Zape (♣)
     const SUITS = [
       { id: 'D', symbol: '♦', name: 'Pica-fumo', color: 'text-red-600', power: 1 },
       { id: 'S', symbol: '♠', name: 'Espadilha', color: 'text-slate-900', power: 2 },
@@ -569,35 +559,46 @@
       playerScore: 0,
       irisScore: 0,
       handNumber: 1,
-      vazaNumber: 1, // 1, 2 ou 3
+      vazaNumber: 1,
       handValue: 1,
-      lastTrucoBy: null, // 'player' | 'iris' | null
-      pendingTruco: null, // { by: 'player'|'iris', targetValue: 3|6|9|12, prevValue: 1|3|6|9 }
+      lastTrucoBy: null,
+      pendingTruco: null,
       isMaoDe11: false,
       vira: null,
       manilhaRank: null,
       playerHand: [],
       irisHand: [],
-      turn: 'player', // 'player' | 'iris'
+      turn: 'player',
       handStarter: 'player',
       vazaStarter: 'player',
-      tablePlayerCard: null, // { card, hidden }
-      tableIrisCard: null,   // { card, hidden }
-      vazaWinners: [], // array de 'player' | 'iris' | 'tie'
+      tablePlayerCard: null,
+      tableIrisCard: null,
+      vazaWinners: [],
       busy: false,
-      gameOver: false
+      gameOver: false,
+      timers: []
     };
 
-    // Cria e embaralha o baralho de 40 cartas
+    // Gerenciador central de timers para evitar travamentos por callbacks antigos
+    function scheduleTimer(fn, delay) {
+      const id = setTimeout(() => {
+        state.timers = state.timers.filter(t => t !== id);
+        fn();
+      }, delay);
+      state.timers.push(id);
+      return id;
+    }
+
+    function clearGameTimers() {
+      state.timers.forEach(id => clearTimeout(id));
+      state.timers = [];
+    }
+
     function createShuffledDeck() {
       const deck = [];
       for (const rank of RANKS) {
         for (const suit of SUITS) {
-          deck.push({
-            rank,
-            suit,
-            id: `${rank}${suit.id}`
-          });
+          deck.push({ rank, suit, id: `${rank}${suit.id}` });
         }
       }
       for (let i = deck.length - 1; i > 0; i--) {
@@ -607,41 +608,39 @@
       return deck;
     }
 
-    // Retorna o rank da manilha com base na Vira
     function getManilhaRank(viraCard) {
       const idx = RANKS.indexOf(viraCard.rank);
       return RANKS[(idx + 1) % RANKS.length];
     }
 
     function isManilha(card) {
-      return card && card.rank === state.manilhaRank;
+      return Boolean(card && card.rank === state.manilhaRank);
     }
 
-    // Calcula a força numérica absoluta de uma carta na mão atual
     function getCardStrength(card, hidden = false) {
-      if (hidden) return -1; // Carta fechada vale zero
-      if (isManilha(card)) {
-        // Manilhas ficam acima de todas as comuns (base 100 + força do naipe 1..4)
-        return 100 + card.suit.power;
-      }
+      if (hidden || !card) return -1;
+      if (isManilha(card)) return 100 + card.suit.power;
       return RANKS.indexOf(card.rank);
     }
 
-    // ==========================================
-    // 4. CONTROLE DO FLUXO DO JOGO
-    // ==========================================
     function resetGame() {
+      clearGameTimers();
       SoundFX.click();
+      hideTrucoBanner();
       state.playerScore = 0;
       state.irisScore = 0;
       state.handNumber = 1;
       state.handStarter = 'player';
       state.gameOver = false;
+      state.busy = false;
       document.getElementById('gameover-modal').classList.add('hidden');
       startNewHand();
     }
 
     function startNewHand() {
+      clearGameTimers();
+      hideTrucoBanner();
+
       if (state.playerScore >= 12 || state.irisScore >= 12) {
         endGame();
         return;
@@ -662,12 +661,10 @@
       state.busy = false;
       document.getElementById('chk-hide-card').checked = false;
 
-      // Verifica Mão de 11
       const p11 = state.playerScore === 11;
       const i11 = state.irisScore === 11;
 
       if (p11 && i11) {
-        // Mão de Ferro (11 x 11)
         state.handValue = 1;
         state.isMaoDe11 = true;
         setIrisDialogue("11 a 11! Mão de Ferro! Sem pedir truco, só na pura superioridade da minha IA!", "Implacável");
@@ -676,27 +673,30 @@
         state.handValue = 1;
         state.isMaoDe11 = true;
         setIrisDialogue("Você tá com 11 pontos... Olha suas cartas e vê se tem coragem de jogar valendo 3 pontos, criador!", "Desafiando");
+        state.vazaStarter = state.handStarter;
+        state.turn = state.vazaStarter;
+        renderAll();
         showMaoDe11Banner();
+        return;
       } else if (i11 && !p11) {
         state.handValue = 1;
         state.isMaoDe11 = true;
-        // IA decide se joga mão de 11
         const irisStrength = evaluateIrisHand();
-        if (irisStrength >= 16) {
+        if (irisStrength >= 15) {
           state.handValue = 3;
           setIrisDialogue("Eu tô com 11 pontos e minhas cartas estão absurdas! Vou jogar valendo 3 pontos pra acabar logo com isso!", "Confiante");
           setStatus("Mão de 11 da Iris! Ela aceitou jogar valendo 3 pontos.");
         } else {
           setIrisDialogue("Tô com 11, mas essas cartas vieram lixo. Toma 1 ponto de esmola aí, criador.", "Desdenhando");
           setStatus("Iris correu na Mão de 11! Você ganhou 1 ponto.");
-          renderAll();
           state.busy = true;
-          setTimeout(() => {
-            state.playerScore += 1;
+          renderAll();
+          scheduleTimer(() => {
+            state.playerScore = Math.min(12, state.playerScore + 1);
             state.handNumber++;
             state.handStarter = state.handStarter === 'player' ? 'iris' : 'player';
             startNewHand();
-          }, 1800);
+          }, 1600);
           return;
         }
       } else {
@@ -707,16 +707,13 @@
 
       state.vazaStarter = state.handStarter;
       state.turn = state.vazaStarter;
-
       renderAll();
 
-      if (!state.pendingTruco) {
-        if (state.turn === 'iris') {
-          setStatus("Vez da Iris jogar...");
-          triggerIrisTurn();
-        } else {
-          setStatus("Sua vez! Escolha uma carta abaixo ou peça TRUCO.");
-        }
+      if (state.turn === 'iris') {
+        setStatus("Vez da Iris jogar...");
+        triggerIrisTurn();
+      } else {
+        setStatus("Sua vez! Escolha uma carta abaixo, grite ou peça TRUCO.");
       }
     }
 
@@ -732,13 +729,11 @@
       setStatus("Decida se vai jogar ou correr na Mão de 11!");
     }
 
-    // Jogador joga uma carta
     function playPlayerCard(index) {
       if (state.busy || state.gameOver || state.turn !== 'player' || state.pendingTruco) return;
       if (index < 0 || index >= state.playerHand.length) return;
 
       const hideCheckbox = document.getElementById('chk-hide-card');
-      // No Truco Paulista, só pode jogar carta fechada na 2ª ou 3ª vaza (se 1ª não empatou)
       const canHide = state.vazaNumber > 1 && state.vazaWinners[0] !== 'tie';
       const isHidden = hideCheckbox.checked && canHide;
 
@@ -750,16 +745,14 @@
       renderAll();
 
       if (state.tableIrisCard) {
-        // Ambos jogaram na vaza
         resolveVaza();
       } else {
         state.turn = 'iris';
-        setStatus("Iris está analisando sua jogada patética...");
+        setStatus("Iris está analisando sua jogada...");
         triggerIrisTurn();
       }
     }
 
-    // Avalia força média da mão da Iris para tomada de decisão
     function evaluateIrisHand() {
       if (state.irisHand.length === 0) return 0;
       let total = 0;
@@ -770,15 +763,23 @@
       return total / state.irisHand.length;
     }
 
-    // Turno da Inteligência Artificial Iris
     function triggerIrisTurn() {
-      if (state.gameOver || state.pendingTruco) return;
+      if (state.gameOver || state.pendingTruco) {
+        state.busy = false;
+        renderAll();
+        return;
+      }
+
       state.busy = true;
+      renderAll();
 
-      setTimeout(() => {
-        if (state.gameOver || state.pendingTruco) return;
+      scheduleTimer(() => {
+        if (state.gameOver || state.pendingTruco) {
+          state.busy = false;
+          renderAll();
+          return;
+        }
 
-        // 1. Verifica se a Iris quer pedir Truco / Aumentar antes de jogar carta
         const canIrisAskTruco =
           !state.isMaoDe11 &&
           state.handValue < 12 &&
@@ -788,11 +789,10 @@
         if (canIrisAskTruco) {
           const avgStr = evaluateIrisHand();
           const alreadyWonFirst = state.vazaWinners[0] === 'iris';
-          // Chance de pedir truco: mão forte, vantagem na 1ª vaza ou blefe arrogante (15%)
           const wantsTruco =
-            (avgStr >= 11 && Math.random() < 0.55) ||
-            (alreadyWonFirst && avgStr >= 8.5 && Math.random() < 0.5) ||
-            (state.vazaNumber === 3 && avgStr >= 9.5 && Math.random() < 0.65) ||
+            (avgStr >= 11 && Math.random() < 0.5) ||
+            (alreadyWonFirst && avgStr >= 8.5 && Math.random() < 0.45) ||
+            (state.vazaNumber === 3 && avgStr >= 9.5 && Math.random() < 0.6) ||
             (Math.random() < 0.14);
 
           if (wantsTruco) {
@@ -801,7 +801,6 @@
           }
         }
 
-        // 2. Iris escolhe a melhor carta para jogar
         const chosenIndex = chooseIrisCardIndex();
         const card = state.irisHand.splice(chosenIndex, 1)[0];
         state.tableIrisCard = { card, hidden: false };
@@ -814,42 +813,33 @@
           resolveVaza();
         } else {
           state.turn = 'player';
-          setStatus("Sua vez! Jogue uma carta ou peça TRUCO.");
+          setStatus("Sua vez! Jogue uma carta, grite ou peça TRUCO.");
+          renderAll();
         }
-      }, 850);
+      }, 750);
     }
 
     function chooseIrisCardIndex() {
       const hand = state.irisHand;
       if (hand.length === 1) return 0;
 
-      // Ordena índices da mais fraca para a mais forte
       const indexed = hand.map((c, idx) => ({ idx, str: getCardStrength(c, false) }));
       indexed.sort((a, b) => a.str - b.str);
 
-      // Se o jogador já jogou na mesa, Iris tenta ganhar com a menor carta suficiente
       if (state.tablePlayerCard) {
         const playerStr = getCardStrength(state.tablePlayerCard.card, state.tablePlayerCard.hidden);
         const winnerCandidate = indexed.find(item => item.str > playerStr);
-        if (winnerCandidate) {
-          return winnerCandidate.idx;
-        }
-        // Se não dá pra ganhar, joga a mais fraca (descarte)
+        if (winnerCandidate) return winnerCandidate.idx;
         return indexed[0].idx;
       }
 
-      // Se Iris começa a vaza:
-      // Na 1ª vaza, tenta garantir com uma carta média-alta ou forte
-      if (state.vazaNumber === 1) {
-        return indexed[indexed.length - 1].idx;
-      }
-      // Na 2ª ou 3ª vaza, joga a mais forte
       return indexed[indexed.length - 1].idx;
     }
 
-    // Resolve quem venceu a vaza atual
     function resolveVaza() {
       state.busy = true;
+      renderAll();
+
       const pStr = getCardStrength(state.tablePlayerCard.card, state.tablePlayerCard.hidden);
       const iStr = getCardStrength(state.tableIrisCard.card, state.tableIrisCard.hidden);
 
@@ -875,17 +865,16 @@
 
       renderAll();
 
-      setTimeout(() => {
+      scheduleTimer(() => {
+        if (state.gameOver) return;
         const handWinner = checkHandWinner();
         if (handWinner) {
           finishHand(handWinner);
         } else {
-          // Próxima vaza
           state.vazaNumber++;
           state.tablePlayerCard = null;
           state.tableIrisCard = null;
 
-          // Quem ganhou a vaza inicia a próxima; se empatou, mantém quem iniciou
           if (vazaResult === 'player' || vazaResult === 'iris') {
             state.vazaStarter = vazaResult;
           }
@@ -900,10 +889,9 @@
             setStatus(`Vaza ${state.vazaNumber}/3 • Sua vez de jogar!`);
           }
         }
-      }, 1500);
+      }, 1400);
     }
 
-    // Regras oficiais de desempate das vazas do Truco Paulista
     function checkHandWinner() {
       const w = state.vazaWinners;
       const pCount = w.filter(x => x === 'player').length;
@@ -913,21 +901,13 @@
       if (iCount === 2) return 'iris';
 
       if (w.length === 2) {
-        // Empate na 1ª vaza: quem ganhar a 2ª leva a mão
-        if (w[0] === 'tie' && (w[1] === 'player' || w[1] === 'iris')) {
-          return w[1];
-        }
-        // Ganhou a 1ª e empatou a 2ª: quem ganhou a 1ª leva a mão
-        if ((w[0] === 'player' || w[0] === 'iris') && w[1] === 'tie') {
-          return w[0];
-        }
+        if (w[0] === 'tie' && (w[1] === 'player' || w[1] === 'iris')) return w[1];
+        if ((w[0] === 'player' || w[0] === 'iris') && w[1] === 'tie') return w[0];
       }
 
       if (w.length === 3) {
-        // Empate na 3ª vaza: quem ganhou a 1ª leva a mão
         if (w[2] === 'tie') {
           if (w[0] === 'player' || w[0] === 'iris') return w[0];
-          // Caso raríssimo de 3 empates seguidos: ninguém pontua (ou quem começou a mão)
           return state.handStarter;
         }
       }
@@ -936,7 +916,9 @@
     }
 
     function finishHand(winner) {
+      state.busy = true;
       SoundFX.winHand();
+
       if (winner === 'player') {
         state.playerScore = Math.min(12, state.playerScore + state.handValue);
         setStatus(`Você ganhou a mão e marcou +${state.handValue} ponto(s)!`);
@@ -947,7 +929,7 @@
 
       renderAll();
 
-      setTimeout(() => {
+      scheduleTimer(() => {
         if (state.playerScore >= 12 || state.irisScore >= 12) {
           endGame();
         } else {
@@ -955,14 +937,17 @@
           state.handStarter = state.handStarter === 'player' ? 'iris' : 'player';
           startNewHand();
         }
-      }, 1600);
+      }, 1500);
     }
 
     function endGame() {
+      clearGameTimers();
+      hideTrucoBanner();
       state.gameOver = true;
       state.busy = true;
-      const playerWon = state.playerScore >= 12;
+      renderAll();
 
+      const playerWon = state.playerScore >= 12;
       const modal = document.getElementById('gameover-modal');
       document.getElementById('gameover-emoji').textContent = playerWon ? '🏆' : '⚡';
       document.getElementById('gameover-title').textContent = playerWon
@@ -978,7 +963,7 @@
     }
 
     // ==========================================
-    // 5. SISTEMA DE TRUCO (3, 6, 9, 12)
+    // TRUCO, AUMENTOS E GRITAR NA MESA
     // ==========================================
     function getNextTrucoValue(current) {
       const idx = TRUCO_STEPS.indexOf(current);
@@ -986,7 +971,25 @@
       return TRUCO_STEPS[idx + 1];
     }
 
-    // Jogador pede Truco / Seis / Nove / Doze
+    function triggerShoutOnTable() {
+      if (state.gameOver || state.pendingTruco) return;
+      SoundFX.yellShout();
+
+      const table = document.getElementById('game-table');
+      table.classList.remove('shout-anim');
+      void table.offsetWidth;
+      table.classList.add('shout-anim');
+
+      const shouts = [
+        "📢 GRITOU NA MESA: \"VEM QUENTE QUE EU TÔ FERVENDO!\"",
+        "📢 GRITOU NA MESA: \"AQUI É TRUCO NA VEIA!\"",
+        "📢 GRITOU NA MESA: \"RESPEITA O CRIADOR!\""
+      ];
+      const yellText = shouts[Math.floor(Math.random() * shouts.length)];
+      setStatus(yellText);
+      setIrisDialogue(getRandomQuote('playerShout'), "Provocada");
+    }
+
     function playerRequestsTruco() {
       if (state.busy || state.gameOver || state.isMaoDe11 || state.pendingTruco) return;
       if (state.turn !== 'player' || state.lastTrucoBy === 'player') return;
@@ -996,19 +999,19 @@
 
       SoundFX.trucoShout();
       const shoutName = TRUCO_NAMES[nextVal];
-      setStatus(`Você pediu ${shoutName} (${nextVal} pts)! Aguardando resposta da Iris...`);
-      setIrisDialogue("Processando sua ousadia... Deixa eu ver se vale a pena tomar esses pontos de você.", "Analisando");
       state.busy = true;
+      setStatus(`📢 Você gritou ${shoutName} (${nextVal} pts)! Aguardando resposta da Iris...`);
+      setIrisDialogue("Processando sua ousadia... Deixa eu ver se vale a pena tomar esses pontos de você.", "Analisando");
       renderAll();
 
-      setTimeout(() => {
+      scheduleTimer(() => {
+        if (state.gameOver) return;
+
         const irisStr = evaluateIrisHand();
         const raiseVal = getNextTrucoValue(nextVal);
         const canRaise = raiseVal !== null;
 
-        // Decisão da IA Iris
-        if (canRaise && irisStr >= 15 && Math.random() < 0.45) {
-          // Iris pede aumento (Seis / Nove / Doze)
+        if (canRaise && irisStr >= 14.5 && Math.random() < 0.45) {
           SoundFX.trucoShout();
           state.handValue = nextVal;
           state.lastTrucoBy = 'iris';
@@ -1016,8 +1019,7 @@
           setIrisDialogue(getRandomQuote('irisRaiseTruco'), "Furiosa");
           showTrucoBanner(raiseVal, nextVal);
           renderAll();
-        } else if (irisStr >= 9.5 || (state.vazaWinners[0] === 'iris' && irisStr >= 7.5) || Math.random() < 0.25) {
-          // Iris aceita
+        } else if (irisStr >= 9 || (state.vazaWinners[0] === 'iris' && irisStr >= 7) || Math.random() < 0.28) {
           state.handValue = nextVal;
           state.lastTrucoBy = 'player';
           state.busy = false;
@@ -1025,33 +1027,31 @@
           setStatus(`A Iris aceitou! A mão agora vale ${nextVal} pontos. Jogue sua carta!`);
           renderAll();
         } else {
-          // Iris corre
           setIrisDialogue(getRandomQuote('irisRunTruco'), "Desdenhando");
           setStatus(`A Iris correu do ${shoutName}! Você ganhou ${state.handValue} ponto(s).`);
           renderAll();
-          setTimeout(() => {
-            finishHand('player');
-          }, 1500);
+          scheduleTimer(() => finishHand('player'), 1400);
         }
-      }, 1100);
+      }, 950);
     }
 
-    // Iris pede Truco / Aumenta para o jogador responder
     function irisInitiatesTruco() {
       const nextVal = getNextTrucoValue(state.handValue);
-      if (!nextVal) return;
+      if (!nextVal) {
+        state.busy = false;
+        renderAll();
+        return;
+      }
 
       SoundFX.trucoShout();
       const shoutName = TRUCO_NAMES[nextVal];
       state.pendingTruco = { by: 'iris', targetValue: nextVal, prevValue: state.handValue };
 
-      if (nextVal === 3) {
-        setIrisDialogue(getRandomQuote('irisAskTruco'), "Provocando");
-      } else {
-        setIrisDialogue(getRandomQuote('irisRaiseTruco'), "Implacável");
-      }
-
-      setStatus(`A Iris pediu ${shoutName} (${nextVal} pts)!`);
+      setIrisDialogue(
+        nextVal === 3 ? getRandomQuote('irisAskTruco') : getRandomQuote('irisRaiseTruco'),
+        nextVal === 3 ? "Provocando" : "Implacável"
+      );
+      setStatus(`🔥 A Iris pediu ${shoutName} (${nextVal} pts)!`);
       showTrucoBanner(nextVal, state.handValue);
       renderAll();
     }
@@ -1083,7 +1083,6 @@
       document.getElementById('truco-banner').classList.add('hidden');
     }
 
-    // Respostas do jogador no Banner
     function handlePlayerAcceptTruco() {
       if (!state.pendingTruco) return;
       SoundFX.click();
@@ -1098,7 +1097,9 @@
           setStatus("Vez da Iris jogar...");
           triggerIrisTurn();
         } else {
+          state.busy = false;
           setStatus("Mão de 11 aceita (3 pts)! Sua vez de jogar.");
+          renderAll();
         }
         return;
       }
@@ -1110,15 +1111,14 @@
       hideTrucoBanner();
 
       setIrisDialogue("Aceitou? Ótimo, assim os meus pontos multiplicam mais rápido!", "Sarcástica");
-      renderAll();
 
-      // Continua o turno de quem tinha pedido (Iris joga sua carta agora)
       if (state.turn === 'iris') {
         setStatus(`Truco aceito (${newVal} pts)! Iris vai jogar a carta dela...`);
         triggerIrisTurn();
       } else {
         state.busy = false;
         setStatus(`Truco aceito (${newVal} pts)! Sua vez de jogar.`);
+        renderAll();
       }
     }
 
@@ -1132,6 +1132,7 @@
       hideTrucoBanner();
 
       state.handValue = ptsLost;
+      state.busy = true;
       setIrisDialogue(
         wasMao11
           ? "Correu na Mão de 11?! Hahaha! O criador tremeu na base a 1 ponto da vitória!"
@@ -1141,9 +1142,7 @@
       setStatus(`Você correu! A Iris ganhou ${ptsLost} ponto(s).`);
       renderAll();
 
-      setTimeout(() => {
-        finishHand('iris');
-      }, 1500);
+      scheduleTimer(() => finishHand('iris'), 1400);
     }
 
     function handlePlayerRaiseTruco() {
@@ -1156,46 +1155,43 @@
       state.handValue = acceptedVal;
       state.pendingTruco = null;
       hideTrucoBanner();
+      state.busy = true;
 
       const raiseName = TRUCO_NAMES[raiseVal];
-      setStatus(`Você aceitou e pediu ${raiseName} (${raiseVal} pts)! Aguardando a Iris...`);
+      setStatus(`📢 Você aceitou e gritou ${raiseName} (${raiseVal} pts)! Aguardando a Iris...`);
       setIrisDialogue(`Pediu ${raiseName}?! Deixa eu calcular se você tá blefando...`, "Analisando");
-      state.busy = true;
       renderAll();
 
-      setTimeout(() => {
+      scheduleTimer(() => {
+        if (state.gameOver) return;
         const irisStr = evaluateIrisHand();
-        if (irisStr >= 12 || Math.random() < 0.35) {
+        if (irisStr >= 11.5 || Math.random() < 0.35) {
           state.handValue = raiseVal;
           state.lastTrucoBy = 'player';
           setIrisDialogue("Pago pra ver! Você não me intimida com esse blefe barato!", "Furiosa");
-          renderAll();
           if (state.turn === 'iris') {
             setStatus(`Iris aceitou o ${raiseName}! Ela vai jogar...`);
             triggerIrisTurn();
           } else {
             state.busy = false;
             setStatus(`Iris aceitou o ${raiseName}! Sua vez de jogar.`);
+            renderAll();
           }
         } else {
           setIrisDialogue(getRandomQuote('irisRunTruco'), "Desdenhando");
           setStatus(`A Iris correu do ${raiseName}! Você levou ${state.handValue} pontos.`);
           renderAll();
-          setTimeout(() => {
-            finishHand('player');
-          }, 1500);
+          scheduleTimer(() => finishHand('player'), 1400);
         }
-      }, 1150);
+      }, 1000);
     }
 
     // ==========================================
-    // 6. RENDERIZAÇÃO DA INTERFACE
+    // RENDERIZAÇÃO
     // ==========================================
     function setIrisDialogue(text, mood = null) {
       document.getElementById('iris-speech').textContent = text;
-      if (mood) {
-        document.getElementById('iris-mood').textContent = mood;
-      }
+      if (mood) document.getElementById('iris-mood').textContent = mood;
     }
 
     function setStatus(text) {
@@ -1223,13 +1219,11 @@
           ${interactive ? `onclick="playPlayerCard(${index})"` : ''}
           class="playing-card ${sizeClasses} ${interactive ? 'interactive' : 'card-played-anim'} ${manilha && !small ? 'manilha-glow' : ''} flex flex-col justify-between"
         >
-          <!-- Canto Superior Esquerdo -->
           <div class="flex flex-col items-center self-start leading-none ${card.suit.color}">
             <span class="${small ? 'text-xs' : 'text-lg sm:text-xl'} font-black">${card.rank}</span>
             <span class="${small ? 'text-xs' : 'text-sm sm:text-base'}">${card.suit.symbol}</span>
           </div>
 
-          <!-- Centro da Carta -->
           <div class="flex flex-col items-center justify-center my-auto">
             <span class="${small ? 'text-base' : 'text-3xl sm:text-4xl'} ${card.suit.color} leading-none">${card.suit.symbol}</span>
             ${manilha && !small ? `
@@ -1239,7 +1233,6 @@
             ` : ''}
           </div>
 
-          <!-- Canto Inferior Direito (Invertido) -->
           <div class="flex flex-col items-center self-end leading-none rotate-180 ${card.suit.color}">
             <span class="${small ? 'text-xs' : 'text-lg sm:text-xl'} font-black">${card.rank}</span>
             <span class="${small ? 'text-xs' : 'text-sm sm:text-base'}">${card.suit.symbol}</span>
@@ -1249,16 +1242,12 @@
     }
 
     function renderAll() {
-      // Placar e Cabeçalho
       document.getElementById('score-player').textContent = state.playerScore;
       document.getElementById('score-iris').textContent = state.irisScore;
       document.getElementById('hand-points-display').textContent = `${state.handValue} ${state.handValue === 1 ? 'PT' : 'PTS'}`;
       document.getElementById('hand-sub-display').textContent = `Mão ${state.handNumber} • Vaza ${state.vazaNumber}/3`;
-
-      // Contador de cartas da Iris
       document.getElementById('iris-cards-count').textContent = `Cartas na mão da Iris: ${state.irisHand.length}`;
 
-      // A Vira e Manilha
       if (state.vira) {
         const viraSlot = document.getElementById('vira-card-slot');
         viraSlot.innerHTML = `
@@ -1275,10 +1264,8 @@
         document.getElementById('manilha-rank-label').textContent = `${state.manilhaRank} (Zape)`;
       }
 
-      // Bolinhas das Vazas
       renderVazaDots();
 
-      // Slots da Mesa
       const irisSlot = document.getElementById('table-iris-slot');
       if (state.tableIrisCard) {
         irisSlot.className = "flex items-center justify-center";
@@ -1297,14 +1284,12 @@
         playerSlot.textContent = "Aguardando";
       }
 
-      // Mão do Jogador
       const handContainer = document.getElementById('player-hand-container');
       const canPlay = !state.busy && !state.gameOver && state.turn === 'player' && !state.pendingTruco;
       handContainer.innerHTML = state.playerHand
         .map((card, idx) => renderCardHTML(card, { interactive: canPlay, index: idx }))
         .join('');
 
-      // Checkbox de esconder carta (habilitado apenas na 2ª ou 3ª vaza se 1ª não empatou)
       const hideWrapper = document.getElementById('hide-card-wrapper');
       const hideCheckbox = document.getElementById('chk-hide-card');
       const canHide = state.vazaNumber > 1 && state.vazaWinners[0] !== 'tie';
@@ -1317,7 +1302,9 @@
         hideCheckbox.checked = false;
       }
 
-      // Botão Pedir Truco
+      const shoutBtn = document.getElementById('btn-shout');
+      shoutBtn.disabled = Boolean(state.gameOver || state.pendingTruco);
+
       const trucoBtn = document.getElementById('btn-ask-truco');
       const trucoLabel = document.getElementById('btn-ask-truco-label');
       const nextTruco = getNextTrucoValue(state.handValue);
@@ -1365,8 +1352,9 @@
     }
 
     // ==========================================
-    // 7. EVENT LISTENERS DOS BOTÕES
+    // EVENT LISTENERS
     // ==========================================
+    document.getElementById('btn-shout').addEventListener('click', triggerShoutOnTable);
     document.getElementById('btn-ask-truco').addEventListener('click', playerRequestsTruco);
     document.getElementById('btn-accept-truco').addEventListener('click', handlePlayerAcceptTruco);
     document.getElementById('btn-run-truco').addEventListener('click', handlePlayerRunTruco);
@@ -1387,7 +1375,6 @@
     document.getElementById('btn-restart').addEventListener('click', resetGame);
     document.getElementById('btn-modal-restart').addEventListener('click', resetGame);
 
-    // Upload de imagem personalizada da Iris
     const fileInput = document.getElementById('avatar-file-input');
     document.getElementById('btn-change-avatar').addEventListener('click', () => {
       SoundFX.click();
@@ -1409,11 +1396,9 @@
       reader.readAsDataURL(file);
     });
 
-    // Inicia a partida ao carregar
     window.addEventListener('DOMContentLoaded', () => {
       startNewHand();
     });
   </script>
 </body>
-</html>
-```
+  </html>
